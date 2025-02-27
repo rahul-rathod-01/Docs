@@ -1,0 +1,154 @@
+Set Up a Custom WordPress Theme
+
+Add Basic Files with landing page and blog page
+
+Inside the folder, create these essential files:
+
+style.css – Defines theme name and styling.
+index.php – The main template file.
+header.php – Header section.
+footer.php – Footer section.
+functions.php – Register theme features.
+single.php – Single blog post layout.
+page.php – Default page layout.
+front-page.php – Custom landing page template.
+home.php – Blog listing page.
+sidebar.php – Optional sidebar.
+
+create a WordPress theme without a blog section
+
+Add Essential Theme Files
+style.css → Theme styles
+index.php → Main template file
+front-page.php → Custom landing page layout
+header.php → Header section
+footer.php → Footer section
+page.php → Default page template
+functions.php → Theme features (menus, styles, etc.)
+
+Define Theme Styles (style.css)
+
+style.css
+/*
+Theme Name: My Landing Theme
+Author: Your Name
+Description: A custom WordPress theme for a landing page without a blog.
+Version: 1.0
+*/
+
+Create the Landing Page (front-page.php)
+front-page.php
+<?php get_header(); ?>
+<section class="hero">
+    <h1>Welcome to My Website</h1>
+    <p>Your amazing tagline goes here.</p>
+    <a href="#contact" class="btn">Contact Us</a>
+</section>
+<section class="features">
+    <h2>Our Features</h2>
+    <p>Highlight your services or products here.</p>
+</section>
+<?php get_footer(); ?>
+
+Create the Header (header.php)
+(header.php)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php bloginfo('name'); ?></title>
+    <?php wp_head(); ?>
+</head>
+<body>
+<header>
+    <nav>
+        <?php wp_nav_menu(array('theme_location' => 'primary')); ?>
+    </nav>
+</header>
+
+Create the Footer (footer.php)
+(footer.php)
+<footer>
+    <p>&copy; <?php echo date('Y'); ?> My Website. All Rights Reserved.</p>
+</footer>
+<?php wp_footer(); ?>
+</body>
+</html>
+
+Create the Default Page Template (page.php)
+(page.php)
+For static pages like About, Contact, etc.
+<?php get_header(); ?>
+<main>
+    <h1><?php the_title(); ?></h1>
+    <p><?php the_content(); ?></p>
+</main>
+<?php get_footer(); ?>
+
+Register Menus and Theme Features (functions.php)
+(functions.php)
+<?php
+// For nav menu
+register_nav_menus(
+    array('primary-menu'=> 'Header Menu')
+);
+add_theme_support('title-tag'); // Enables dynamic title
+add_theme_support('post-thumbnails'); // Enables featured images
+function custom_enqueue_scripts() {
+    // Enqueue your custom JavaScript file
+    wp_enqueue_script('custom-script', get_template_directory_uri() . '/custom-script.js', array('jquery'), null, true);
+}
+add_action('wp_enqueue_scripts', 'custom_enqueue_scripts');
+// link css
+function theme_enqueue_styles() {
+    wp_enqueue_style('main-style', get_template_directory_uri() . '/assets/css/style.css');
+}
+add_action('wp_enqueue_scripts', 'theme_enqueue_styles');
+
+If you create the blog section add more file
+Customize Blog Layout
+
+home.php for the blog post listing
+
+home.php
+
+<?php get_header(); ?>
+<div class="blog-container">
+    <h1>Latest Blog Posts</h1>
+    <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
+        <article>
+            <h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
+            <p><?php the_excerpt(); ?></p>
+        </article>
+    <?php endwhile; endif; ?>
+</div>
+<?php get_footer(); ?>
+
+For single post layout (single.php):
+
+(single.php)
+
+<?php get_header(); ?>
+<article>
+    <h1><?php the_title(); ?></h1>
+    <p><?php the_content(); ?></p>
+</article>
+<?php get_footer(); ?>
+
+
+Create sidebar.php (Single Post with Sidebar)
+
+For individual blog posts : both the landing page and blog section
+
+When if you get the sidebar:  <?php get_sidebar(); ?>
+<?php get_sidebar(); ?>
+
+
+sidebar.php
+
+<aside class="sidebar">
+    <?php if (is_active_sidebar('main-sidebar')) : ?>
+        <?php dynamic_sidebar('main-sidebar'); ?>
+    <?php endif; ?>
+</aside>

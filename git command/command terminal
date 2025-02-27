@@ -1,0 +1,24 @@
+“ Mkdir ” = for create new folder	
+“ CD “ = Change the directory
+
+
+Git and Github command
+Git init command to Initialize a Git Repository 
+“ git init ”
+“ git add . “ add the file 
+“ git commit -m "Initial commit" “ for commit
+git remote -v
+
+“ git remote add origin <your-repo-url> “ Connect Your Local Repo to GitHub
+Like this way to add “ git remote add origin https://github.com/your-username/my-project.git “
+
+“ git branch -M main ”
+“ git push -u origin main ” Push Your Code to GitHub
+
+“ git status “ check the changes
+“ git log “ check the commit
+“ git checkout hashcode” from git log command check for 
+“ git checkout master “ form current git repo
+
+“ ls -a ” : chack the “.git” file
+
