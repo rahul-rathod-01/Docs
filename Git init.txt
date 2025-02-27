@@ -1,0 +1,7 @@
+git init only for one time in parent folder
+
+
+git add .
+git commit -m "your msg"
+git branch -M main
+git push
