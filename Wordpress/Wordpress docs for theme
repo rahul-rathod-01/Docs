@@ -37,7 +37,9 @@ Version: 1.0
 */
 
 Create the Landing Page (front-page.php)
+
 front-page.php
+
 <?php get_header(); ?>
 <section class="hero">
     <h1>Welcome to My Website</h1>
@@ -51,7 +53,9 @@ front-page.php
 <?php get_footer(); ?>
 
 Create the Header (header.php)
+
 (header.php)
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,7 +72,9 @@ Create the Header (header.php)
 </header>
 
 Create the Footer (footer.php)
+
 (footer.php)
+
 <footer>
     <p>&copy; <?php echo date('Y'); ?> My Website. All Rights Reserved.</p>
 </footer>
@@ -77,7 +83,9 @@ Create the Footer (footer.php)
 </html>
 
 Create the Default Page Template (page.php)
+
 (page.php)
+
 For static pages like About, Contact, etc.
 <?php get_header(); ?>
 <main>
@@ -87,7 +95,9 @@ For static pages like About, Contact, etc.
 <?php get_footer(); ?>
 
 Register Menus and Theme Features (functions.php)
+
 (functions.php)
+
 <?php
 // For nav menu
 register_nav_menus(
