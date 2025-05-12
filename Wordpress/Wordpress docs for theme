@@ -106,31 +106,65 @@ Create the Header (header.php)
 <html <?php language_attributes(); ?>>
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Site Title -->
+    <title><?php wp_title('|', true, 'right'); ?><?php bloginfo('name'); ?></title>
+    
+    <!-- WordPress Head Hook -->
     <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
 
-<header>
-    <div class="logo">
-        <?php if (has_custom_logo()) {
-            the_custom_logo();
-        } else { ?>
-            <h1><?php bloginfo('name'); ?></h1>
-        <?php } ?>
+<header class="site-header">
+    <div class="container">
+        <!-- Logo -->
+        <div class="site-logo">
+            <?php
+            if (has_custom_logo()) {
+                the_custom_logo();
+            } else {
+                echo '<h1>' . get_bloginfo('name') . '</h1>';
+            }
+            ?>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="main-navigation">
+            <?php
+            wp_nav_menu(array(
+                'theme_location' => 'primary-menu',
+                'menu_class'     => 'nav-menu',
+                'container'      => false,
+            ));
+            ?>
+        </nav>
     </div>
-    <nav>
-        <?php wp_nav_menu(array('theme_location' => 'primary-menu')); ?>
-    </nav>
 </header>
+
 
 
 Create the Footer (footer.php)
 
 (footer.php)
 
-<footer>
-    <p>&copy; <?php echo date('Y'); ?> <?php bloginfo('name'); ?>. All rights reserved.</p>
+<footer class="site-footer">
+    <div class="container">
+        <p>&copy; <?php echo date('Y'); ?> <?php bloginfo('name'); ?>. All rights reserved.</p>
+
+        <!-- Optional: Add footer menu -->
+        <nav class="footer-navigation">
+            <?php
+            if (has_nav_menu('footer-menu')) {
+                wp_nav_menu(array(
+                    'theme_location' => 'footer-menu',
+                    'menu_class'     => 'footer-menu',
+                    'container'      => false,
+                ));
+            }
+            ?>
+        </nav>
+    </div>
 </footer>
 
 <?php wp_footer(); ?>
@@ -143,16 +177,30 @@ Create the Default Page Template (page.php)
 (page.php)
 
 For static pages like About, Contact, etc.
+
 <?php get_header(); ?>
 
-<main>
+<main class="site-main container">
     <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
-        <h1><?php the_title(); ?></h1>
-        <div><?php the_content(); ?></div>
+        <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+            <h1 class="page-title"><?php the_title(); ?></h1>
+            <div class="page-content">
+                <?php the_content(); ?>
+            </div>
+        </article>
+
+        <?php
+        // If comments are enabled, display them
+        if (comments_open() || get_comments_number()) :
+            comments_template();
+        endif;
+        ?>
+
     <?php endwhile; endif; ?>
 </main>
 
 <?php get_footer(); ?>
+
 
 For single post layout (single.php):
 
@@ -160,14 +208,50 @@ For single post layout (single.php):
 
 <?php get_header(); ?>
 
-<main>
+<main class="site-main container">
     <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
-        <h1><?php the_title(); ?></h1>
-        <div><?php the_content(); ?></div>
+
+        <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+            <h1 class="post-title"><?php the_title(); ?></h1>
+
+            <div class="post-meta">
+                <span>Posted on <?php echo get_the_date(); ?></span>
+                <span> by <?php the_author(); ?></span>
+                <span> | <?php comments_number('No Comments', '1 Comment', '% Comments'); ?></span>
+            </div>
+
+            <?php if (has_post_thumbnail()) : ?>
+                <div class="post-thumbnail">
+                    <?php the_post_thumbnail('large'); ?>
+                </div>
+            <?php endif; ?>
+
+            <div class="post-content">
+                <?php the_content(); ?>
+            </div>
+
+            <div class="post-tags">
+                <?php the_tags('<strong>Tags:</strong> ', ', ', '<br>'); ?>
+            </div>
+        </article>
+
+        <nav class="post-navigation">
+            <div class="nav-previous"><?php previous_post_link(); ?></div>
+            <div class="nav-next"><?php next_post_link(); ?></div>
+        </nav>
+
+        <?php
+        // Display comments if open or existing
+        if (comments_open() || get_comments_number()) :
+            comments_template();
+        endif;
+        ?>
+
     <?php endwhile; endif; ?>
 </main>
 
 <?php get_footer(); ?>
+
 
 
 Create sidebar.php (Single Post with Sidebar)
@@ -180,11 +264,16 @@ When if you get the sidebar:  <?php get_sidebar(); ?>
 
 sidebar.php
 
-<aside class="sidebar">
+<aside class="site-sidebar">
     <?php if (is_active_sidebar('main-sidebar')) : ?>
         <?php dynamic_sidebar('main-sidebar'); ?>
+    <?php else : ?>
+        <div class="no-widgets">
+            <p>Add some widgets to the sidebar from the admin panel.</p>
+        </div>
     <?php endif; ?>
 </aside>
+
 
 Create the Landing Page (front-page.php)
 
