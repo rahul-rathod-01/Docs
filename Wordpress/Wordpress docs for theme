@@ -54,46 +54,51 @@ Register Menus and Theme Features (functions.php)
 (functions.php)
 
 <?php
+// Theme Setup
+function mytheme_setup() {
+    // Add featured image support
+    add_theme_support('post-thumbnails');
 
-// Register Navigation Menu
-function my_custom_menus() {
+    // Add dynamic title tag support
+    add_theme_support('title-tag');
+
+    // Enable custom logo
+    add_theme_support('custom-logo');
+
+    // Register navigation menus
     register_nav_menus(array(
-        'primary-menu' => __('Primary Menu', 'my-custom-theme'),
+        'primary-menu' => __('Primary Menu', 'mytheme'),
+        'footer-menu'  => __('Footer Menu', 'mytheme'),
     ));
 }
-add_action('after_setup_theme', 'my_custom_menus');
+add_action('after_setup_theme', 'mytheme_setup');
 
 
-add_theme_support('title-tag'); // Enables dynamic title
-add_theme_support('post-thumbnails'); // Enables featured images
-add_theme_support('custom-logo');
+// Enqueue Styles and Scripts
+function mytheme_enqueue_assets() {
+    // Main stylesheet
+    wp_enqueue_style('mytheme-style', get_stylesheet_uri());
 
-function custom_enqueue_scripts() {
-    // Enqueue your custom JavaScript file
-    wp_enqueue_script('custom-script', get_template_directory_uri() . '/custom-script.js', array('jquery'), null, true);
+    // Optional: Add custom CSS or JS
+    // wp_enqueue_style('custom-css', get_template_directory_uri() . '/assets/css/style.css');
+    // wp_enqueue_script('custom-js', get_template_directory_uri() . '/assets/js/script.js', array('jquery'), null, true);
 }
-add_action('wp_enqueue_scripts', 'custom_enqueue_scripts');
-
-// link css
-function theme_enqueue_styles() {
-    wp_enqueue_style('main-style', get_template_directory_uri() . '/assets/css/style.css');
-}
-add_action('wp_enqueue_scripts', 'theme_enqueue_styles');
+add_action('wp_enqueue_scripts', 'mytheme_enqueue_assets');
 
 
-// Register Sidebar Widget Area
-
-function my_theme_widgets_init() {
+// Register Widget Area (Sidebar)
+function mytheme_widgets_init() {
     register_sidebar(array(
-        'name' => __('Main Sidebar', 'my-custom-theme'),
-        'id' => 'main-sidebar',
+        'name'          => __('Main Sidebar', 'mytheme'),
+        'id'            => 'main-sidebar',
         'before_widget' => '<div class="widget">',
-        'after_widget' => '</div>',
-        'before_title' => '<h3>',
-        'after_title' => '</h3>',
+        'after_widget'  => '</div>',
+        'before_title'  => '<h3 class="widget-title">',
+        'after_title'   => '</h3>',
     ));
 }
-add_action('widgets_init', 'my_theme_widgets_init');
+add_action('widgets_init', 'mytheme_widgets_init');
+
 
 
 ?>
@@ -300,28 +305,69 @@ home.php for the blog post listing
 home.php
 
 <?php get_header(); ?>
-<div class="blog-container">
+
+<main class="blog-container">
     <h1>Latest Blog Posts</h1>
-    <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
-        <article>
-            <h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
-            <p><?php the_excerpt(); ?></p>
-        </article>
-    <?php endwhile; endif; ?>
-</div>
+
+    <div class="content-with-sidebar">
+        <div class="main-content">
+            <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
+                <article <?php post_class(); ?>>
+                    <h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
+                    <p class="post-meta">Posted on <?php the_time('F j, Y'); ?> by <?php the_author(); ?></p>
+                    <div class="excerpt"><?php the_excerpt(); ?></div>
+                    <a href="<?php the_permalink(); ?>" class="read-more">Read More</a>
+                </article>
+            <?php endwhile; else : ?>
+                <p>No posts found.</p>
+            <?php endif; ?>
+
+            <div class="pagination">
+                <?php the_posts_pagination(); ?>
+            </div>
+        </div>
+
+        <?php get_sidebar(); ?>
+    </div>
+</main>
+
 <?php get_footer(); ?>
+
 
 
 
 archive.php (Archive Page)
-
 <?php get_header(); ?>
 
-<main>
-    <h1><?php the_archive_title(); ?></h1>
-    <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
-        <h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
-    <?php endwhile; endif; ?>
+<main class="archive-container">
+    <header class="archive-header">
+        <h1><?php the_archive_title(); ?></h1>
+        <?php the_archive_description('<p class="archive-description">', '</p>'); ?>
+    </header>
+
+    <div class="content-with-sidebar">
+        <div class="main-content">
+            <?php if (have_posts()) : ?>
+                <?php while (have_posts()) : the_post(); ?>
+                    <article <?php post_class(); ?>>
+                        <h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
+                        <p class="post-meta">Posted on <?php the_time('F j, Y'); ?> by <?php the_author(); ?></p>
+                        <div class="excerpt"><?php the_excerpt(); ?></div>
+                        <a href="<?php the_permalink(); ?>" class="read-more">Read More</a>
+                    </article>
+                <?php endwhile; ?>
+
+                <div class="pagination">
+                    <?php the_posts_pagination(); ?>
+                </div>
+            <?php else : ?>
+                <p>No posts found in this archive.</p>
+            <?php endif; ?>
+        </div>
+
+        <?php get_sidebar(); ?>
+    </div>
 </main>
 
 <?php get_footer(); ?>
+
